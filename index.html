@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Calvary Worship</title>
-
 <style>
 body {
     font-family: Arial, sans-serif;
@@ -13,8 +12,7 @@ body {
     color: white;
     overflow-x: hidden;
 }
-
-/* HEADER */
+/* Header */
 header {
     position: fixed;
     top: 0;
@@ -27,52 +25,47 @@ header {
     justify-content: space-between;
     align-items: center;
 }
-.logo {
-    font-size: 24px;
-    font-weight: bold;
-}
-.church {
-    font-size: 13px;
-    color: #ffefae;
-}
+.logo { font-size: 24px; font-weight: bold; transition: color 0.3s; }
+.logo:hover { color: #ffefae; cursor: pointer; }
+.church { font-size: 13px; color: #ffefae; }
 .menu-btn {
     font-size: 24px;
     cursor: pointer;
     background: none;
     border: none;
     color: white;
+    margin-right: 30px;
 }
-
-/* SIDEBAR */
+/* Sidebar */
 .sidebar {
     width: 230px;
     height: 100vh;
-    background: #000000CC;
+    background: rgba(0, 0, 0, 0.85);
     position: fixed;
     top: 0;
-    left: -250px;
+    left: 0;
+    transform: translateX(-250px);
     padding-top: 90px;
     display: flex;
     flex-direction: column;
-    transition: left 0.4s ease;
+    transition: transform 0.4s ease;
     z-index: 999;
 }
-.sidebar.active {
-    left: 0;
-}
+.sidebar.active { transform: translateX(0); }
 .sidebar a {
     color: white;
     text-decoration: none;
     padding: 12px 18px;
     font-size: 16px;
     display: block;
+    transition: background 0.3s, padding-left 0.3s;
 }
-.sidebar a:hover {
-    background: #ffffff22;
+.sidebar a:hover, .sidebar a.active {
+    background: rgba(255, 255, 255, 0.2);
     border-radius: 5px;
+    padding-left: 25px;
 }
-
-/* OVERLAY */
+/* Overlay */
 .overlay {
     position: fixed;
     top: 0;
@@ -81,71 +74,92 @@ header {
     height: 100%;
     background: rgba(0,0,0,0.4);
     display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
     z-index: 998;
 }
 .overlay.active {
     display: block;
+    opacity: 1;
 }
-
-/* CONTENT */
+/* Content */
 .content {
     padding-top: 120px;
-    margin-left: 0;
     transition: margin-left 0.4s ease;
+    min-height: 100vh;
 }
-.sidebar.active ~ .content {
-    margin-left: 250px;
-}
-
-/* SECTIONS */
 .section {
-    display: none;
     padding: 20px;
     text-align: center;
     background: rgba(0,0,0,0.6);
     margin: 15px;
     border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    position: relative;
+    overflow: hidden;
 }
-.section h3, .section h2 { margin-top: 0; }
-
-@media (max-width: 768px) {
-    .sidebar.active ~ .content {
-        margin-left: 0;
-    }
+/* HOME SECTION BACKGROUND */
+#home {
+    position: relative;
+    height: 400px;
+    border-radius: 10px;
+}
+#home::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    border-radius: 10px;
+    z-index: 1;
+}
+#home h2, #home p {
+    position: relative;
+    z-index: 2;
+}
+@media (min-width: 769px) {
+    .sidebar.active ~ .content { margin-left: 250px; }
 }
 </style>
-
 <script>
-function toggleSidebar() {
-    document.querySelector('.sidebar').classList.toggle('active');
-    document.querySelector('.overlay').classList.toggle('active');
-}
+const images = [
+    "assets/1.jpg",
+    "assets/2.jpg",
+    "assets/3.jpg",
+    "assets/4.jpg",
+    "assets/5.jpg",
+    "assets/6.jpg"
 
+
+];
+document.addEventListener("DOMContentLoaded", () => {
+    let i = 0;
+    const home = document.getElementById("home");
+    home.style.backgroundImage = `url(${images[i]})`;
+    home.style.backgroundSize = "cover";
+    home.style.backgroundPosition = "center";
+    home.style.transition = "background-image 1.5s ease-in-out";
+    setInterval(() => {
+        i = (i + 1) % images.length;
+        home.style.backgroundImage = `url(${images[i]})`;
+    }, 6000);
+});
+function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.querySelector('.overlay');
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+    if (window.innerWidth < 769) {
+        document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+    }
+}
 function closeSidebar() {
     document.querySelector('.sidebar').classList.remove('active');
     document.querySelector('.overlay').classList.remove('active');
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll('.sidebar a').forEach(link => {
-        link.addEventListener('click', () => {
-            closeSidebar();
-        });
-    });
-});
-
-function showSection(id){
-    let pages = ["home"];
-    pages.forEach(p => document.getElementById(p).style.display="none");
-    document.getElementById(id).style.display="block";
-    window.scrollTo(0,0);
+    document.body.style.overflow = '';
 }
 </script>
 </head>
-
 <body>
-
-<!-- HEADER -->
 <header>
   <div>
     <div class="logo">✝️ Calvary Worship</div>
@@ -153,28 +167,21 @@ function showSection(id){
   </div>
   <button class="menu-btn" onclick="toggleSidebar()">☰</button>
 </header>
-
-<!-- SIDEBAR -->
 <div class="sidebar">
-  <a href="https://calvaryworship.github.io/Calvary-Worship-Indian-National-Full-Gospel-Church-Raniamba" target="_blank">Home</a> 
-  <a href="https://calvaryworship.github.io/Christian-Song-MP3-Player" target="_blank">Play Song</a>
-  <a href="https://calvaryworship.github.io/Christian-Worship-Songs-Video-Player" target="_blank">Videos</a>
-  <a href="https://calvaryworship.github.io/Gujarati-Christian-Song-e-Book" target="_blank">Song Book</a>
-  <a href="https://calvaryworship.github.io/-christian-song-lyrics-slideshow" target="_blank">Song Lyrics Slide</a>
-  <a href="https://calvaryworship.github.io/Calvary-Worship-Mobile-Apps" target="_blank">Mobile Apps</a>
-  <a href="https://calvaryworship.github.io/Calvary-Worship-Photo-Gallery" target="_blank">Photo Gallery</a>
+  <a href="#" class="active">Home</a> 
+  <a href="#">Play Song</a>
+  <a href="#">Videos</a>
+  <a href="#">Song Book</a>
+  <a href="#">Song Lyrics Slide</a>
+  <a href="#">Mobile Apps</a>
+  <a href="#">Photo Gallery</a>
 </div>
-
-<!-- OVERLAY -->
 <div class="overlay" onclick="closeSidebar()"></div>
-
-<!-- MAIN CONTENT -->
 <div class="content">
-  <div id="home" class="section" style="display:block;">
+  <div id="home" class="section">
     <h2>Welcome to Calvary Worship</h2>
     <p>Worship • Praise • Prayer • Fellowship</p>
   </div>
 </div>
-
 </body>
 </html>
